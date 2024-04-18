@@ -1,5 +1,7 @@
 ![image](https://github.com/jbsec/vision_tool_demo/assets/45885505/6d439034-122d-488f-b5af-2f35a4c74aed)
 
+# <center> LDC </center>
+
 # <center> 👓 VISION 👓 - Interactive Demo V0.0.2 </center>
 ## VISION: Visual Interface for SHAP Interpretation and Ongoing Navigation
 ### SHAP-XAI Powered collective local explanation timeline tool.
