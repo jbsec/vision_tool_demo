@@ -35,8 +35,8 @@ X = data
 y = total_calls.astype(int)
 
 # Streamlit Sidebar
-st.sidebar.header("SHAP Value Visualizer")
-st.sidebar.write("This tool visualizes the SHAP values for each feature in a RandomForest model to explain individual predictions. Use the slider to select different data instances.")
+st.sidebar.header("Welcome to VISION!")
+st.sidebar.write("Use the timeline bar below the charts to adjust your time period for the local instance feature impact you wish to view. Do not try to change this too rapidly or the app may slow somewhat.")
 
 # Cache the model training for faster load times
 @st.cache(allow_output_mutation=True)
