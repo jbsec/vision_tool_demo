@@ -39,8 +39,7 @@ y = total_calls.astype(int)
 st.sidebar.header("Welcome to VISION!")
 st.sidebar.write("Use the timeline bar below the charts to adjust your time period for the local instance feature impact you wish to view. Do not try to change this too rapidly or the app may slow somewhat.")
 
-# Updated cache mechanism
-@st.experimental_singleton
+# Function to train the model
 def train_model(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     model = RandomForestRegressor(n_estimators=100, random_state=42)
@@ -49,14 +48,13 @@ def train_model(X, y):
 
 model, X_train, X_test, y_train, y_test = train_model(X, y)
 
-# Update cache for SHAP values
-@st.experimental_singleton
-def get_shap_values(model, X_test):
+# Function to calculate SHAP values
+def calculate_shap_values(model, X_test):
     explainer = shap.Explainer(model)
     shap_values = explainer(X_test)
     return shap_values, explainer.expected_value
 
-shap_values, base_value = get_shap_values(model, X_test)
+shap_values, base_value = calculate_shap_values(model, X_test)
 
 # Calculate the maximum SHAP value for consistent scaling across all instances
 max_shap_value = np.max(np.abs(shap_values.values))
