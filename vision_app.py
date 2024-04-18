@@ -61,7 +61,7 @@ shap_values, base_value = get_shap_values(model, X_test)
 max_shap_value = np.max(np.abs(shap_values.values))
 
 # Main Streamlit app
-st.title('SHAP Value Visualizer')
+st.title('VISION - Feature Impact View')
 
 # Slider for selecting the instance to visualize
 selected_instance_index = st.slider('Select instance', 0, len(X_test)-1, 0)
