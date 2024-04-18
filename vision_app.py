@@ -7,7 +7,6 @@ import shap
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
-
 # Define the parameters for the time series
 hours = 48
 minutes_per_hour = 60
@@ -40,30 +39,6 @@ y = total_calls.astype(int)
 st.sidebar.header("Welcome to VISION!")
 st.sidebar.write("Use the timeline bar below the charts to adjust your time period for the local instance feature impact you wish to view. Do not try to change this too rapidly or the app may slow somewhat.")
 
-# Time Series Plots of Each Feature
-st.subheader('Time Series Analysis of Call Data Features')
-
-# Creating a figure with subplots
-fig_ts = make_subplots(rows=5, cols=1, shared_xaxes=True, vertical_spacing=0.02,
-                       subplot_titles=('Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints'))
-
-# Adding each feature as a time series
-features_list = ['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints']
-for i, feature in enumerate(features_list, start=1):
-    fig_ts.add_trace(
-        go.Scatter(x=time_index, y=data[feature], mode='lines', name=feature),
-        row=i, col=1
-    )
-
-# Update layout aesthetics
-fig_ts.update_layout(height=1200, width=700, title_text="Feature Trends Over Time")
-fig_ts.update_xaxes(title_text="Time")
-fig_ts.update_yaxes(title_text="Value")
-
-# Display the Plotly figure in the Streamlit app
-st.plotly_chart(fig_ts, use_container_width=True)
-
-
 # Cache the model training for faster load times
 @st.cache(allow_output_mutation=True)
 def train_model(X, y):
@@ -86,61 +61,88 @@ shap_values, base_value = get_shap_values(model, X_test)
 # Calculate the maximum SHAP value for consistent scaling across all instances
 max_shap_value = np.max(np.abs(shap_values.values))
 
-# Main Streamlit app
-st.title('VISION - Feature Impact View')
+# Split the screen into two columns
+col1, col2 = st.columns(2)
 
-# Slider for selecting the instance to visualize
-selected_instance_index = st.slider('Select instance', 0, len(X_test)-1, 0)
+# Time series plots in the first column
+with col1:
+    st.subheader('Time Series Analysis of Call Data Features')
 
-# Features to display
-features_to_display = ['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints']
-colors = ['blue', 'green', 'red', 'purple', 'orange']  # Different colors for each feature
+    # Creating a figure with subplots
+    fig_ts = make_subplots(rows=5, cols=1, shared_xaxes=True, vertical_spacing=0.02,
+                           subplot_titles=('Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints'))
 
-# Extracting the SHAP values for the selected instance
-instance_shap_values = shap_values.values[selected_instance_index]
+    # Adding each feature as a time series
+    for i, feature in enumerate(['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints'], start=1):
+        fig_ts.add_trace(
+            go.Scatter(x=time_index, y=data[feature], mode='lines', name=feature),
+            row=i, col=1
+        )
 
-# Create the plotly figure
-fig = go.Figure()
+    # Update layout aesthetics
+    fig_ts.update_layout(height=1200, title_text="Feature Trends Over Time")
+    fig_ts.update_xaxes(title_text="Time")
+    fig_ts.update_yaxes(title_text="Value")
 
-# Add bars for each SHAP value of the selected instance
-for i, feature in enumerate(features_to_display):
-    fig.add_trace(go.Bar(
-        x=[feature], 
-        y=[instance_shap_values[X_test.columns.get_loc(feature)]],
-        name=feature, 
-        marker_color=colors[i]
+    # Display the Plotly figure in the Streamlit app
+    st.plotly_chart(fig_ts, use_container_width=True)
+
+# Original tool in the second column
+with col2:
+    st.title('VISION - Feature Impact View')
+
+    # Slider for selecting the instance to visualize
+    selected_instance_index = st.slider('Select instance', 0, len(X_test)-1, 0)
+
+    # Features to display
+    features_to_display = ['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints']
+    colors = ['blue', 'green', 'red', 'purple', 'orange']  # Different colors for each feature
+
+    # Extracting the SHAP values for the selected instance
+    instance_shap_values = shap_values.values[selected_instance_index]
+
+    # Create the plotly figure
+    fig = go.Figure()
+
+    # Add bars for each SHAP value of the selected instance
+    for i, feature in enumerate(features_to_display):
+        fig.add_trace(go.Bar(
+            x=[feature], 
+            y=[instance_shap_values[X_test.columns.get_loc(feature)]],
+            name=feature, 
+            marker_color=colors[i]
+        ))
+
+    # Add the base value and predicted value for reference
+    predicted_value = base_value + instance_shap_values.sum()
+    fig.add_trace(go.Scatter(
+        x=[features_to_display[-1]], 
+        y=[predicted_value],
+        mode='markers+text',
+        text=['Predicted Value'],
+        textposition='top center',
+        marker=dict(color='black', size=12),
+        showlegend=False
     ))
 
-# Add the base value and predicted value for reference
-predicted_value = base_value + instance_shap_values.sum()
-fig.add_trace(go.Scatter(
-    x=[features_to_display[-1]], 
-    y=[predicted_value],
-    mode='markers+text',
-    text=['Predicted Value'],
-    textposition='top center',
-    marker=dict(color='black', size=12),
-    showlegend=False
-))
+    fig.add_trace(go.Scatter(
+        x=[features_to_display[0]], 
+        y=[base_value],
+        mode='markers+text',
+        text=['Base Value'],
+        textposition='bottom center',
+        marker=dict(color='grey', size=12),
+        showlegend=False
+    ))
 
-fig.add_trace(go.Scatter(
-    x=[features_to_display[0]], 
-    y=[base_value],
-    mode='markers+text',
-    text=['Base Value'],
-    textposition='bottom center',
-    marker=dict(color='grey', size=12),
-    showlegend=False
-))
+    # Set the figure layout
+    fig.update_layout(
+        title=f'SHAP Values for Instance {selected_instance_index}',
+        xaxis_title='Feature',
+        yaxis_title='SHAP Value Impact',
+        yaxis=dict(range=[-max_shap_value, max_shap_value * 1.1]),
+        barmode='group'
+    )
 
-# Set the figure layout
-fig.update_layout(
-    title=f'SHAP Values for Instance {selected_instance_index}',
-    xaxis_title='Feature',
-    yaxis_title='SHAP Value Impact',
-    yaxis=dict(range=[-max_shap_value, max_shap_value * 1.1]),
-    barmode='group'
-)
-
-# Display the figure in the Streamlit app
-st.plotly_chart(fig, use_container_width=True)
+    # Display the figure in the Streamlit app
+    st.plotly_chart(fig, use_container_width=True)
