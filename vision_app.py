@@ -38,6 +38,30 @@ y = total_calls.astype(int)
 st.sidebar.header("Welcome to VISION!")
 st.sidebar.write("Use the timeline bar below the charts to adjust your time period for the local instance feature impact you wish to view. Do not try to change this too rapidly or the app may slow somewhat.")
 
+# Time Series Plots of Each Feature
+st.subheader('Time Series Analysis of Call Data Features')
+
+# Creating a figure with subplots
+fig_ts = make_subplots(rows=5, cols=1, shared_xaxes=True, vertical_spacing=0.02,
+                       subplot_titles=('Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints'))
+
+# Adding each feature as a time series
+features_list = ['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints']
+for i, feature in enumerate(features_list, start=1):
+    fig_ts.add_trace(
+        go.Scatter(x=time_index, y=data[feature], mode='lines', name=feature),
+        row=i, col=1
+    )
+
+# Update layout aesthetics
+fig_ts.update_layout(height=1200, width=700, title_text="Feature Trends Over Time")
+fig_ts.update_xaxes(title_text="Time")
+fig_ts.update_yaxes(title_text="Value")
+
+# Display the Plotly figure in the Streamlit app
+st.plotly_chart(fig_ts, use_container_width=True)
+
+
 # Cache the model training for faster load times
 @st.cache(allow_output_mutation=True)
 def train_model(X, y):
