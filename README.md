@@ -9,3 +9,8 @@ VISION is a SHAP-powered local instance investigation tool for time series predi
 ## Visit Our Webapp on Streamlit
 https://vision-tool-demo.streamlit.app/
 
+### Screenshot of Demo Usage
+
+![image](https://github.com/jbsec/vision_tool_demo/assets/45885505/06167fe3-a4f8-4e22-a781-a26f374fd67e)
+
+
