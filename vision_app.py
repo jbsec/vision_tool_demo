@@ -58,6 +58,17 @@ def get_shap_values(model, X_test):
 
 shap_values, base_value = get_shap_values(model, X_test)
 
+# Calculate the maximum SHAP value for consistent scaling across all instances
+if shap_values is not None:
+    max_shap_value = np.max(np.abs(shap_values.values))
+else:
+    max_shap_value = 0  # Default to zero if SHAP values are not computed
+
+# Check if max_shap_value is valid for use
+if max_shap_value == 0:
+    st.error('Error computing SHAP values. Please check the model and data.')
+    st.stop()
+
 # Split the screen into two columns
 col1, col2 = st.columns(2)
 
