@@ -58,25 +58,11 @@ def get_shap_values(model, X_test):
 
 shap_values, base_value = get_shap_values(model, X_test)
 
-# Calculate the maximum SHAP value for consistent scaling across all instances
-if shap_values is not None:
-    max_shap_value = np.max(np.abs(shap_values.values))
-else:
-    max_shap_value = 0  # Default to zero if SHAP values are not computed
-
-# Check if max_shap_value is valid for use
-if max_shap_value == 0:
-    st.error('Error computing SHAP values. Please check the model and data.')
-    st.stop()
-
 # Split the screen into two columns
 col1, col2 = st.columns(2)
 
 with col1:
     st.subheader('Time Series Analysis of Call Data Features')
-
-    # Adjust the height of the plot to ensure it fits in the column
-    fig_ts_height = 600  # Reduced height to better fit in the screen
 
     # Creating a figure with subplots
     fig_ts = make_subplots(rows=5, cols=1, shared_xaxes=True, vertical_spacing=0.05,
@@ -89,55 +75,56 @@ with col1:
             row=i + 1, col=1
         )
 
-    fig_ts.update_layout(height=fig_ts_height, title_text="Feature Trends Over Time")
+    fig_ts.update_layout(height=600, title_text="Feature Trends Over Time")
     st.plotly_chart(fig_ts, use_container_width=True)
 
 with col2:
     st.title('VISION - Feature Impact View')
-    selected_instance_index = st.slider('Select instance', 0, len(X_test) - 1, 0)
-    features_to_display = ['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints']
-    colors = ['blue', 'green', 'red', 'purple', 'orange']
+    if shap_values is not None:
+        selected_instance_index = st.slider('Select instance', 0, len(X_test) - 1, 0)
+        features_to_display = ['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints']
+        colors = ['blue', 'green', 'red', 'purple', 'orange']
 
-    # Extracting the SHAP values for the selected instance
-    instance_shap_values = shap_values.values[selected_instance_index]
+        instance_shap_values = shap_values.values[selected_instance_index]
+        max_shap_value = np.max(np.abs(shap_values.values)) if len(shap_values.values) > 0 else 0
 
-    fig = go.Figure()
-    for i, feature in enumerate(features_to_display):
-        fig.add_trace(go.Bar(
-            x=[feature],
-            y=[instance_shap_values[X_test.columns.get_loc(feature)]],
-            name=feature,
-            marker_color=colors[i]
+        fig = go.Figure()
+        for i, feature in enumerate(features_to_display):
+            fig.add_trace(go.Bar(
+                x=[feature],
+                y=[instance_shap_values[X_test.columns.get_loc(feature)]],
+                name=feature,
+                marker_color=colors[i]
+            ))
+
+        predicted_value = base_value + instance_shap_values.sum()
+        fig.add_trace(go.Scatter(
+            x=[features_to_display[-1]], 
+            y=[predicted_value],
+            mode='markers+text',
+            text=['Predicted Value'],
+            textposition='top center',
+            marker=dict(color='black', size=12),
+            showlegend=False
         ))
 
-    # Add the base value and predicted value for reference
-    predicted_value = base_value + instance_shap_values.sum()
-    fig.add_trace(go.Scatter(
-        x=[features_to_display[-1]],  # Set x to the last feature for positioning
-        y=[predicted_value],
-        mode='markers+text',
-        text=['Predicted Value'],
-        textposition='top center',
-        marker=dict(color='black', size=12),
-        showlegend=False
-    ))
+        fig.add_trace(go.Scatter(
+            x=[features_to_display[0]], 
+            y=[base_value],
+            mode='markers+text',
+            text=['Base Value'],
+            textposition='bottom center',
+            marker=dict(color='grey', size=12),
+            showlegend=False
+        ))
 
-    fig.add_trace(go.Scatter(
-        x=[features_to_display[0]],  # Set x to the first feature for positioning
-        y=[base_value],
-        mode='markers+text',
-        text=['Base Value'],
-        textposition='bottom center',
-        marker=dict(color='grey', size=12),
-        showlegend=False
-    ))
-
-
-    fig.update_layout(
-        title=f'SHAP Values for Instance {selected_instance_index}',
-        xaxis_title='Feature',
-        yaxis_title='SHAP Value Impact',
-        yaxis=dict(range=[-max_shap_value, max_shap_value * 1.1]),
-        barmode='group'
-    )
-    st.plotly_chart(fig, use_container_width=True)
+        fig.update_layout(
+            title=f'SHAP Values for Instance {selected_instance_index}',
+            xaxis_title='Feature',
+            yaxis_title='SHAP Value Impact',
+            yaxis=dict(range=[-max_shap_value, max_shap_value * 1.1]),
+            barmode='group'
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.error("SHAP values could not be computed. Please check your model and input data.")
