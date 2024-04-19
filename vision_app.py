@@ -36,7 +36,7 @@ X = data
 y = total_calls.astype(int)
 
 # Streamlit Sidebar
-st.sidebar.header("Welcome to VISION!")
+st.sidebar.header("Welcome to VISION! (DEMO VERSION)")
 st.sidebar.write("Use the timeline bar below the charts to adjust your time period for the local instance feature impact you wish to view. Do not try to change this too rapidly or the app may slow somewhat.")
 
 # Cache the model training for faster load times
