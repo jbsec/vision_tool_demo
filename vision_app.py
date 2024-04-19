@@ -59,13 +59,16 @@ def get_shap_values(model, X_test):
 shap_values, base_value = get_shap_values(model, X_test)
 
 # Split the screen into two columns
-col1, col2 = st.columns([1, 1])  # Specify equal weights to enforce equal width
+col1, col2 = st.columns(2)
 
 with col1:
     st.subheader('Time Series Analysis of Call Data Features')
 
+    # Adjust the height of the plot to ensure it fits in the column
+    fig_ts_height = 600  # Reduced height to better fit in the screen
+
     # Creating a figure with subplots
-    fig_ts = make_subplots(rows=5, cols=1, shared_xaxes=True, vertical_spacing=0.02,
+    fig_ts = make_subplots(rows=5, cols=1, shared_xaxes=True, vertical_spacing=0.05,
                            subplot_titles=['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints'])
 
     # Adding each feature as a time series
@@ -75,7 +78,7 @@ with col1:
             row=i + 1, col=1
         )
 
-    fig_ts.update_layout(height=1000, title_text="Feature Trends Over Time")
+    fig_ts.update_layout(height=fig_ts_height, title_text="Feature Trends Over Time")
     st.plotly_chart(fig_ts, use_container_width=True)
 
 with col2:
