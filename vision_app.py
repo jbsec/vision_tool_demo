@@ -76,7 +76,7 @@ with col1:
     for i in range(1, 6):  # Adjust the range based on the number of rows/subplots
         fig_ts.update_xaxes(title_text="Time", row=i, col=1)
     
-    fig_ts.update_layout(height=600, title_text="Feature Trends Over Time")
+    fig_ts.update_layout(height=600, title_text="Feature Trends Over Time", showlegend=False)
     st.plotly_chart(fig_ts, use_container_width=True)
 
 with col2:
