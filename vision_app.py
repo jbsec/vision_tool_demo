@@ -131,5 +131,11 @@ with col2:
             barmode='group'
         )
         st.plotly_chart(fig, use_container_width=True)
+        
+        # Textbox for description below the chart
+        description = """
+        **Interpretation Guide:**
+        This visualization shows the SHAP values for the selected model instance. Each bar represents the impact of a feature on the model's prediction. Positive values increase the prediction, while negative values decrease it. This insight helps understand which features are most influential for specific predictions and why the model behaves as it does in certain scenarios.
+        """
     else:
         st.error("SHAP values could not be computed. Please check your model and input data.")
