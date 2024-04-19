@@ -110,9 +110,10 @@ with col2:
             marker_color=colors[i]
         ))
 
+    # Add the base value and predicted value for reference
     predicted_value = base_value + instance_shap_values.sum()
     fig.add_trace(go.Scatter(
-        x=[features_to_display[-1]], 
+        x=[features_to_display[-1]],  # Set x to the last feature for positioning
         y=[predicted_value],
         mode='markers+text',
         text=['Predicted Value'],
@@ -122,7 +123,7 @@ with col2:
     ))
 
     fig.add_trace(go.Scatter(
-        x=[features_to_display[0]], 
+        x=[features_to_display[0]],  # Set x to the first feature for positioning
         y=[base_value],
         mode='markers+text',
         text=['Base Value'],
@@ -130,6 +131,7 @@ with col2:
         marker=dict(color='grey', size=12),
         showlegend=False
     ))
+
 
     fig.update_layout(
         title=f'SHAP Values for Instance {selected_instance_index}',
