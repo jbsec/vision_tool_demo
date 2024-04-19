@@ -7,24 +7,19 @@ import shap
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
-# Define the parameters for the time series
+# params for ts sim data
+# all dummy/sim data for demo usage
 hours = 48
 minutes_per_hour = 60
 total_minutes = hours * minutes_per_hour
-
-# Time array
-time_index = pd.date_range(start="2023-04-01 00:00", periods=total_minutes, freq='T')
-
-# Simulating the features
-np.random.seed(42)
+time_index = pd.date_range(start="2023-04-01 00:00", periods=total_minutes, freq='T') # define start here
+np.random.seed(90210)
 total_calls = 50 + 30 * np.sin(np.linspace(0, 4 * np.pi, total_minutes)) + np.random.randint(0, 10, total_minutes)
 dropped_calls = (total_calls * 0.05) + np.random.randint(0, 3, total_minutes)
 average_call_duration = np.abs(np.random.normal(120, 30, total_minutes))
 peak_call_time = np.random.uniform(0, 60, total_minutes)
 call_failures = (total_calls * 0.1) + np.random.randint(0, 5, total_minutes)
 customer_complaints = np.random.poisson(0.1, total_minutes)
-
-# Create the DataFrame
 data = pd.DataFrame({
     'Dropped Calls': dropped_calls.astype(int),
     'Average Call Duration': average_call_duration.round(1),
@@ -35,12 +30,12 @@ data = pd.DataFrame({
 X = data
 y = total_calls.astype(int)
 
-# Streamlit Sidebar
+# SIDEBAR
 st.sidebar.header("👓 Welcome to VISION! 👓")
 st.sidebar.header("**DEMO VERSION**")
 st.sidebar.write("Use the timeline bar below the charts to adjust your time period for the local instance feature impact you wish to view. Do not try to change this too rapidly or the app may slow somewhat.")
 
-# Cache the model training for faster load times
+# Model Caching (Makes the app faster) 
 @st.cache(allow_output_mutation=True)
 def train_model(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -48,9 +43,10 @@ def train_model(X, y):
     model.fit(X_train, y_train)
     return model, X_train, X_test, y_train, y_test
 
+# Train models....
 model, X_train, X_test, y_train, y_test = train_model(X, y)
 
-# Explain model predictions using SHAP values
+# cache xais
 @st.cache(allow_output_mutation=True)
 def get_shap_values(model, X_test):
     explainer = shap.Explainer(model)
@@ -59,7 +55,7 @@ def get_shap_values(model, X_test):
 
 shap_values, base_value = get_shap_values(model, X_test)
 
-# Split the screen into two columns
+# Split the screen into two columns here:
 col1, col2 = st.columns(2)
 
 with col1:
