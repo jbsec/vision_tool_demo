@@ -137,5 +137,7 @@ with col2:
         **Interpretation Guide:**
         This visualization shows the SHAP values for the selected model instance. Each bar represents the impact of a feature on the model's prediction. Positive values increase the prediction, while negative values decrease it. This insight helps understand which features are most influential for specific predictions and why the model behaves as it does in certain scenarios.
         """
+        st.text_area("Chart Description", value=description, height=150)
+        
     else:
         st.error("SHAP values could not be computed. Please check your model and input data.")
