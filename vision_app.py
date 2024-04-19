@@ -7,6 +7,11 @@ import shap
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
+######
+# TARGET FEATURE IS: "total_calls"
+# Just for reference. 
+######
+
 # params for ts sim data
 # all dummy/sim data for demo usage
 hours = 48
