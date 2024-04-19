@@ -75,6 +75,10 @@ with col1:
             row=i + 1, col=1
         )
 
+    # Update x-axes titles for all plots
+    for i in range(1, 6):  # Adjust the range based on the number of rows/subplots
+        fig_ts.update_xaxes(title_text="Time", row=i, col=1)
+    
     fig_ts.update_layout(height=600, title_text="Feature Trends Over Time")
     st.plotly_chart(fig_ts, use_container_width=True)
 
