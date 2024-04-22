@@ -48,8 +48,8 @@ def get_shap_values(model, X_test):
 
 shap_values, base_value = get_shap_values(model, X_test)
 
-# Layout with spacers
-col1, spacer1, col2, spacer2, col3 = st.columns([2, 0.1, 2, 0.1, 2])
+# Adjust the layout with spacer columns for visual separation
+col1, spacer1, col2, spacer2, col3 = st.columns([3, 0.1, 3, 0.1, 3])
 
 with col1:
     st.subheader('Time Series Analysis of Call Data Features')
@@ -64,6 +64,10 @@ with col1:
         fig_ts.update_xaxes(title_text="Time", row=i, col=1)
     fig_ts.update_layout(height=600, title_text="Feature Trends Over Time", showlegend=False)
     st.plotly_chart(fig_ts, use_container_width=True)
+
+# Spacer columns are empty, serving as margins
+with spacer1:
+    st.write("")  # This can be left empty for visual spacing
 
 with col2:
     st.title('VISION - Feature Impact View')
@@ -113,8 +117,9 @@ with col2:
     else:
         st.error("SHAP values could not be computed. Please check your model and input data.")
 
+with spacer2:
+    st.write("")  # This can be left empty for visual spacing
+
 with col3:
     st.subheader("Additional Insights")
     st.write("Filler content for the third column.")
-
-# The rest of your Streamlit app code...
