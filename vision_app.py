@@ -12,6 +12,9 @@ from plotly.subplots import make_subplots
 # Just for reference. 
 ######
 
+# Split the screen into five sections with two spacer columns
+col1, spacer1, col2, spacer2, col3 = st.columns([2, 0.1, 2, 0.1, 2])
+
 # params for ts sim data
 # all dummy/sim data for demo usage
 hours = 48
