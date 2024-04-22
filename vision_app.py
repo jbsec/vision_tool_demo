@@ -67,12 +67,7 @@ with col1:
         fig_ts.update_xaxes(title_text="Time", row=i, col=1)
     fig_ts.update_layout(height=600, title_text="Feature Trends Over Time", showlegend=False)
     st.plotly_chart(fig_ts, use_container_width=True)
-
-# Spacer columns are empty, serving as margins
-with spacer1:
-    st.write("")  # This can be left empty for visual spacing
     
-
 with col2:
     st.title('VISION - Feature Impact View')
     if shap_values is not None:
