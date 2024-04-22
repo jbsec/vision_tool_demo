@@ -69,7 +69,7 @@ with col1:
     st.plotly_chart(fig_ts, use_container_width=True)
     
 with col2:
-    st.title('VISION - Feature Impact View')
+    st.title('Feature Impact View')
     if shap_values is not None:
         selected_instance_index = st.slider('Select instance', 0, len(X_test) - 1, 0)
         features_to_display = ['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints']
