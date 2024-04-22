@@ -7,11 +7,11 @@ import shap
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
-# Simulate time series data
+# Simulated data parameters
 hours = 48
 minutes_per_hour = 60
 total_minutes = hours * minutes_per_hour
-time_index = pd.date_range(start="2023-04-01 00:00", periods=total_minutes, freq='T') # define start here
+time_index = pd.date_range(start="2023-04-01 00:00", periods=total_minutes, freq='T')
 np.random.seed(90210)
 total_calls = 50 + 30 * np.sin(np.linspace(0, 4 * np.pi, total_minutes)) + np.random.randint(0, 10, total_minutes)
 dropped_calls = (total_calls * 0.05) + np.random.randint(0, 3, total_minutes)
@@ -29,10 +29,7 @@ data = pd.DataFrame({
 X = data
 y = total_calls.astype(int)
 
-# Sidebar (Now Removed)
-# ...
-
-# Model Training and SHAP value computation
+# Model Caching (Makes the app faster) 
 @st.cache(allow_output_mutation=True)
 def train_model(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -40,10 +37,9 @@ def train_model(X, y):
     model.fit(X_train, y_train)
     return model, X_train, X_test, y_train, y_test
 
-# Train models....
 model, X_train, X_test, y_train, y_test = train_model(X, y)
 
-# cache xais
+# SHAP values computation
 @st.cache(allow_output_mutation=True)
 def get_shap_values(model, X_test):
     explainer = shap.Explainer(model)
@@ -52,9 +48,7 @@ def get_shap_values(model, X_test):
 
 shap_values, base_value = get_shap_values(model, X_test)
 
-#########################
-
-# Adjust the layout with spacers
+# Layout with spacers
 col1, spacer1, col2, spacer2, col3 = st.columns([2, 0.1, 2, 0.1, 2])
 
 with col1:
@@ -71,22 +65,14 @@ with col1:
     fig_ts.update_layout(height=600, title_text="Feature Trends Over Time", showlegend=False)
     st.plotly_chart(fig_ts, use_container_width=True)
 
-# Spacers (Empty Columns for Visual Separation)
-# with spacer1:
-#     st.write("")
-# with spacer2:
-#     st.write("")
-
 with col2:
     st.title('VISION - Feature Impact View')
     if shap_values is not None:
         selected_instance_index = st.slider('Select instance', 0, len(X_test) - 1, 0)
         features_to_display = ['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints']
         colors = ['blue', 'green', 'red', 'purple', 'orange']
-
         instance_shap_values = shap_values.values[selected_instance_index]
         max_shap_value = np.max(np.abs(shap_values.values)) if len(shap_values.values) > 0 else 0
-
         fig = go.Figure()
         for i, feature in enumerate(features_to_display):
             fig.add_trace(go.Bar(
@@ -95,7 +81,6 @@ with col2:
                 name=feature,
                 marker_color=colors[i]
             ))
-
         predicted_value = base_value + instance_shap_values.sum()
         fig.add_trace(go.Scatter(
             x=[features_to_display[-1]], 
@@ -106,7 +91,6 @@ with col2:
             marker=dict(color='black', size=12),
             showlegend=False
         ))
-
         fig.add_trace(go.Scatter(
             x=[features_to_display[0]], 
             y=[base_value],
@@ -116,7 +100,6 @@ with col2:
             marker=dict(color='grey', size=12),
             showlegend=False
         ))
-
         fig.update_layout(
             title=f'SHAP Values for Instance {selected_instance_index}',
             xaxis_title='Feature',
@@ -125,7 +108,6 @@ with col2:
             barmode='group'
         )
         st.plotly_chart(fig, use_container_width=True)
-        
         description = """**Interpretation Guide:** This visualization shows the SHAP values for the selected model instance..."""
         st.text_area("The Value of This XAI", value=description, height=150)
     else:
@@ -133,7 +115,6 @@ with col2:
 
 with col3:
     st.subheader("Additional Insights")
-    st.write("This column can be used for additional metrics, visualizations, or information to enhance the user's understanding of the model's performance or data insights.")
+    st.write("Filler content for the third column.")
 
-# End of the Streamlit app
-
+# The rest of your Streamlit app code...
