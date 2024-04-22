@@ -123,6 +123,7 @@ with col2:
 
 with col3:
     st.subheader("Additional Insights")
+    st.write("Filler content for the third column.")
     # ... (placeholder for additional content)
 
 # ... (any additional Streamlit code you want to include)
