@@ -117,8 +117,44 @@ with col2:
         st.error("SHAP values could not be computed. Please check your model and input data.")
 
 with col3:
-    st.subheader("Additional Insights")
-    st.write("Filler content for the third column.")
-    # ... (placeholder for additional content)
+    st.subheader("Sankey Diagram of Feature Contributions")
+    if shap_values is not None:
+        # Sankey diagram setup
+        feature_names = X_test.columns.tolist()
+        selected_instance_shap_values = shap_values.values[selected_instance_index]
+        
+        # Define nodes for Sankey diagram
+        nodes = feature_names + ['Total Calls']
+        nodes_indices = list(range(len(nodes)))  # Generate a list of node indices
+
+        # Define source, target, and value for flows
+        source = nodes_indices[:-1]  # All feature indices
+        target = [len(nodes_indices) - 1] * len(feature_names)  # Target is the 'Total Calls' node for all features
+        value = selected_instance_shap_values.tolist()
+
+        # Define link colors by their SHAP value (blue for positive, red for negative)
+        link_color = [
+            'rgba(0, 0, 255, 0.5)' if val > 0 else 'rgba(255, 0, 0, 0.5)'
+            for val in value
+        ]
+
+        # Create figure
+        fig_sankey = go.Figure(data=[go.Sankey(
+            node=dict(
+                pad=15,
+                thickness=20,
+                line=dict(color="black", width=0.5),
+                label=nodes
+            ),
+            link=dict(
+                source=source,  # indices correspond to labels, eg A1, A2, A1, B1, ...
+                target=target,
+                value=value,
+                color=link_color
+            ))])
+
+        st.plotly_chart(fig_sankey, use_container_width=True)
+    else:
+        st.write("Select an instance to generate the Sankey diagram.")
 
 # ... (any additional Streamlit code you want to include)
