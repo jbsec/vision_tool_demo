@@ -67,8 +67,7 @@ with col1:
         fig_ts.update_xaxes(title_text="Time", row=i, col=1)
     fig_ts.update_layout(height=600, title_text="Feature Trends Over Time", showlegend=False)
     st.plotly_chart(fig_ts, use_container_width=True)
-    description = """ This visualization shows the SHAP values for the selected model instance. Each bar represents the impact of a feature on the model's prediction. Positive values increase the prediction, while negative values decrease it. This insight helps understand which features are most influential for specific predictions and why the model behaves as it does in certain scenarios. """
-    st.text_area("Interpretation Guide", value=description, height=150)
+
     
 with col2:
     st.title('Feature Impact View')
@@ -156,8 +155,7 @@ with col3:
             ))])
 
         st.plotly_chart(fig_sankey, use_container_width=True)
-        description = """ This visualization shows the SHAP values for the selected model instance. Each bar represents the impact of a feature on the model's prediction. Positive values increase the prediction, while negative values decrease it. This insight helps understand which features are most influential for specific predictions and why the model behaves as it does in certain scenarios. """
-        st.text_area("Interpretation Guide", value=description, height=150)
+
     else:
         st.write("Select an instance to generate the Sankey diagram.")
 
