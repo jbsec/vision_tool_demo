@@ -119,7 +119,7 @@ with col2:
 with col3:
     st.subheader("Sankey Diagram of Feature Contributions")
     if shap_values is not None:
-        # Sankey diagram setup
+        # Sankey diagram setup 
         feature_names = X_test.columns.tolist()
         selected_instance_shap_values = shap_values.values[selected_instance_index]
         
