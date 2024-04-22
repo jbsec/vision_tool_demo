@@ -7,6 +7,9 @@ import shap
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
+# Set the page to wide mode
+st.set_page_config(layout="wide")
+
 # Simulated data parameters
 hours = 48
 minutes_per_hour = 60
@@ -29,7 +32,7 @@ data = pd.DataFrame({
 X = data
 y = total_calls.astype(int)
 
-# Model Caching (Makes the app faster) 
+# Model Caching (Makes the app faster)
 @st.cache(allow_output_mutation=True)
 def train_model(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -48,8 +51,8 @@ def get_shap_values(model, X_test):
 
 shap_values, base_value = get_shap_values(model, X_test)
 
-# Adjust the layout with spacer columns for visual separation
-col1, spacer1, col2, spacer2, col3 = st.columns([3, 0.1, 3, 0.1, 3])
+# Create three equally wide columns
+col1, col2, col3 = st.columns([1, 1, 1])
 
 with col1:
     st.subheader('Time Series Analysis of Call Data Features')
@@ -68,6 +71,7 @@ with col1:
 # Spacer columns are empty, serving as margins
 with spacer1:
     st.write("")  # This can be left empty for visual spacing
+    
 
 with col2:
     st.title('VISION - Feature Impact View')
@@ -117,9 +121,8 @@ with col2:
     else:
         st.error("SHAP values could not be computed. Please check your model and input data.")
 
-with spacer2:
-    st.write("")  # This can be left empty for visual spacing
-
 with col3:
     st.subheader("Additional Insights")
-    st.write("Filler content for the third column.")
+    # ... (placeholder for additional content)
+
+# ... (any additional Streamlit code you want to include)
