@@ -55,7 +55,7 @@ shap_values, base_value = get_shap_values(model, X_test)
 col1, col2, col3 = st.columns([1, 1, 1])
 
 with col1:
-    st.subheader('Time Series')
+    st.subheader('Time Series Plots')
     fig_ts = make_subplots(rows=5, cols=1, shared_xaxes=True, vertical_spacing=0.05,
                            subplot_titles=['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints'])
     for i, feature in enumerate(['Dropped Calls', 'Average Call Duration', 'Peak Call Time', 'Call Failures', 'Customer Complaints']):
