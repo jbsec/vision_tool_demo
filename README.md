@@ -2,6 +2,8 @@
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-name.streamlit.app)
 
+[![Build Status](https://github.com/jbsec/vision_tool_demo/workflows/Streamlit%20Build/badge.svg)](https://github.com/jbsec/vision_tool_demo/actions)
+
 This was an early version of the PhD work I was focused on during 2024. Since this time, several changes have been made and will eventually be released into an open source project that will argubly, provide more value and greater novelty in terms of value and usage for those wishing to conduct explainable analyis, for now, feel free to browse and look over this early prototype.
 
 
