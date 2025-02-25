@@ -1,5 +1,6 @@
 ![image](https://github.com/jbsec/vision_tool_demo/assets/45885505/6d439034-122d-488f-b5af-2f35a4c74aed)
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-name.streamlit.app)
 
 This was an early version of the PhD work I was focused on during 2024. Since this time, several changes have been made and will eventually be released into an open source project that will argubly, provide more value and greater novelty in terms of value and usage for those wishing to conduct explainable analyis, for now, feel free to browse and look over this early prototype.
 
